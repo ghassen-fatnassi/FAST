@@ -4,7 +4,7 @@ this is a personal effort to learn how to make things go FAST
 ## Labs Checklist
 
 ### Stanford CS 149 : **Parallel Computing**
-- [ ] Lab 1: **Performance Analysis on a Quad-Core CPU**
+- [x] Lab 1: **Performance Analysis on a Quad-Core CPU** [WriteUpLink](https://www.notion.so/Write-Up-of-CS149-Assignement1-1689f1788efd80db96a8d681ca68f429?pvs=4)
 - [ ] Lab 2: **Building A Task Execution Library from the Ground Up**
 - [ ] Lab 3: **A Simple CUDA Renderer**
 - [ ] Lab 4: **Chat149 - A Flash Attention Transformer DNN**
