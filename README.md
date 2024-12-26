@@ -1,5 +1,5 @@
 # FAST
-this Repo contains my implementation of MIT 6.5840 (distributed systems) &amp; Stanford CS 149 (paralell computing) LABS.
+this Repo contains my implementation of MIT 6.5840 (distributed systems) &amp; Stanford CS 149 (parallel computing) LABS.
 this is a personal effort to learn how to make things go FAST
 ## Labs Checklist
 
