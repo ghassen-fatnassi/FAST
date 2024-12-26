@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <iostream>
 #include <algorithm>
 #include <getopt.h>
 
@@ -75,7 +76,7 @@ int main(int argc, char **argv)
     const unsigned int width = 1600;
     const unsigned int height = 1200;
     const int maxIterations = 256;
-    int numThreads = 2;
+    int numThreads = 4;
 
     float x0 = -2;
     float x1 = 1;
@@ -130,21 +131,23 @@ int main(int argc, char **argv)
     int *output_thread = new int[width * height];
 
     //
-    // Run the serial implementation.  Run the code three times and
+    // Run the serial implementation.  Run the code 3~5 times and
     // take the minimum to get a good estimate.
     //
 
-    double minSerial = 1e30;
-    for (int i = 0; i < 5; ++i)
+    long double minSerial = 1e9;
+    for (int i = 0; i < 4; ++i)
     {
         memset(output_serial, 0, width * height * sizeof(int));
-        double startTime = CycleTimer::currentSeconds();
+        long double startTime = CycleTimer::currentSeconds();
         mandelbrotSerial(x0, y0, x1, y1, width, height, 0, height, maxIterations, output_serial);
-        double endTime = CycleTimer::currentSeconds();
-        minSerial = std::min(minSerial, endTime - startTime);
+        long double endTime = CycleTimer::currentSeconds();
+        if ((endTime - startTime) > 0)
+        {
+            minSerial = std::min(minSerial, endTime - startTime);
+        }
     }
-
-    printf("[mandelbrot serial]:\t\t[%.3f] ms\n", minSerial * 1000);
+    printf("[mandelbrot serial]:\t\t[%.3Lf] ms\n", minSerial * 1000);
     writePPMImage(output_serial, width, height, "mandelbrot-serial.ppm", maxIterations);
 
     //
@@ -158,7 +161,10 @@ int main(int argc, char **argv)
         double startTime = CycleTimer::currentSeconds();
         mandelbrotThread(numThreads, x0, y0, x1, y1, width, height, maxIterations, output_thread);
         double endTime = CycleTimer::currentSeconds();
-        minThread = std::min(minThread, endTime - startTime);
+        if ((endTime - startTime) > 0)
+        {
+            minThread = std::min(minThread, endTime - startTime);
+        }
     }
 
     printf("[mandelbrot thread]:\t\t[%.3f] ms\n", minThread * 1000);
@@ -175,7 +181,7 @@ int main(int argc, char **argv)
     }
 
     // compute speedup
-    printf("\t\t\t\t(%.2fx speedup from %d threads)\n", minSerial / minThread, numThreads);
+    printf("\t\t\t\t(%.2Lfx speedup from %d threads)\n", minSerial / minThread, numThreads);
 
     delete[] output_serial;
     delete[] output_thread;
