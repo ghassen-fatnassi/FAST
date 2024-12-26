@@ -70,13 +70,12 @@ bool verifyResult(int *gold, int *result, int width, int height)
     return 1;
 }
 
-int main(int argc, char **argv)
+int run_tests(int num_threads, int argc, char **argv)
 {
-
-    const unsigned int width = 1600;
-    const unsigned int height = 1200;
+    const unsigned int width = 1024;
+    const unsigned int height = 840;
     const int maxIterations = 256;
-    int numThreads = 4;
+    int numThreads = num_threads;
 
     float x0 = -2;
     float x1 = 1;
@@ -125,49 +124,62 @@ int main(int argc, char **argv)
             return 1;
         }
     }
-    // end parsing of commandline options
-
     int *output_serial = new int[width * height];
     int *output_thread = new int[width * height];
 
     //
     // Run the serial implementation.  Run the code 3~5 times and
     // take the minimum to get a good estimate.
+    // i'll declare the sample size here
+    int size = 4;
     //
-
     long double minSerial = 1e9;
-    for (int i = 0; i < 4; ++i)
+    long double avgSerial = 0;
+    for (int i = 0; i < size; ++i)
     {
         memset(output_serial, 0, width * height * sizeof(int));
         long double startTime = CycleTimer::currentSeconds();
-        mandelbrotSerial(x0, y0, x1, y1, width, height, 0, height, maxIterations, output_serial);
+        mandelbrotSerial(x0, y0, x1, y1, width, height, 0, height / 2, maxIterations, output_serial);
         long double endTime = CycleTimer::currentSeconds();
         if ((endTime - startTime) > 0)
         {
+            avgSerial += endTime - startTime;
             minSerial = std::min(minSerial, endTime - startTime);
         }
+        else
+        {
+            avgSerial += minSerial;
+        }
     }
-    printf("[mandelbrot serial]:\t\t[%.3Lf] ms\n", minSerial * 1000);
+    avgSerial /= size;
+    printf("[mandelbrot serial]:\t\t[%.3Lf] ms\n", avgSerial * 1000);
     writePPMImage(output_serial, width, height, "mandelbrot-serial.ppm", maxIterations);
 
     //
     // Run the threaded version
     //
 
-    double minThread = 1e30;
-    for (int i = 0; i < 5; ++i)
+    long double minThread = 1e30;
+    long double avgThread = 0;
+    for (int i = 0; i < size; ++i)
     {
         memset(output_thread, 0, width * height * sizeof(int));
-        double startTime = CycleTimer::currentSeconds();
+        long double startTime = CycleTimer::currentSeconds();
         mandelbrotThread(numThreads, x0, y0, x1, y1, width, height, maxIterations, output_thread);
-        double endTime = CycleTimer::currentSeconds();
+        long double endTime = CycleTimer::currentSeconds();
         if ((endTime - startTime) > 0)
         {
+            avgThread += endTime - startTime;
             minThread = std::min(minThread, endTime - startTime);
         }
+        else
+        {
+            avgThread += minThread;
+        }
     }
-
-    printf("[mandelbrot thread]:\t\t[%.3f] ms\n", minThread * 1000);
+    avgThread /= size;
+    // ghassen here : i changed the calculation from min to avg
+    printf("[mandelbrot thread]:\t\t[%.3Lf] ms\n", avgThread * 1000);
     writePPMImage(output_thread, width, height, "mandelbrot-thread.ppm", maxIterations);
 
     if (!verifyResult(output_serial, output_thread, width, height))
@@ -181,10 +193,22 @@ int main(int argc, char **argv)
     }
 
     // compute speedup
-    printf("\t\t\t\t(%.2Lfx speedup from %d threads)\n", minSerial / minThread, numThreads);
+    printf("\t\t\t\t(%.2Lfx speedup from %d threads)\n", avgSerial / avgThread, numThreads);
 
     delete[] output_serial;
     delete[] output_thread;
+    return 0;
+}
+
+int main(int argc, char **argv)
+{
+    // end parsing of commandline options
+    for (int i = 2; i < 8; i += 1)
+    {
+        printf("#################   num_threads=%d   ##################\n", i);
+        run_tests(i, argc, argv);
+        std::cout << "\n";
+    }
 
     return 0;
 }

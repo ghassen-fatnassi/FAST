@@ -86,8 +86,11 @@ void mandelbrotSerial(
       float x = x0 + i * dx;
       float y = y0 + j * dy;
 
-      int index = (j * width + i);
-      output[index] = mandel(x, y, maxIterations);
+      int index1 = (j * width + i);
+      output[index1] = mandel(x, y, maxIterations);
+      int index2 = ((height - j - 1) * width + i);
+      output[index2] = output[index1];
+      // codeforces paid off baby haha
     }
   }
 }

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <thread>
-
+#include <atomic>
 #include "CycleTimer.h"
 
 typedef struct
@@ -13,43 +13,48 @@ typedef struct
     int *output;
     int threadId;
     int numThreads;
+    std::atomic<int> *nextRow; // Added for dynamic work distribution
 } WorkerArgs;
 
 extern void mandelbrotSerial(
     float x0, float y0, float x1, float y1,
     int width, int height,
-    int startRow, int numRows,
+    int startRow, int totalRows,
     int maxIterations,
     int output[]);
 
-//
-// workerThreadStart --
-//
-// Thread entrypoint.
 void workerThreadStart(WorkerArgs *const args)
 {
+    const int CHUNK_SIZE = 16;
+    std::atomic<int> &nextRowIndex = *args->nextRow;
 
-    // TODO FOR CS149 STUDENTS: Implement the body of the worker
-    // thread here. Each thread should make a call to mandelbrotSerial()
-    // to compute a part of the output image.  For example, in a
-    // program that uses two threads, thread 0 could compute the top
-    // half of the image and thread 1 could compute the bottom half.
-    mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, args->threadId * args->height / args->numThreads, args->height / args->numThreads, args->maxIterations, args->output);
-    printf("Hello world from thread %d\n", args->threadId);
+    while (true)
+    {
+        uint startRow = nextRowIndex.fetch_add(CHUNK_SIZE, std::memory_order_relaxed);
+        if (startRow >= args->height / 2)
+        {
+            break;
+        }
+
+        int rowsToProcess = std::min(CHUNK_SIZE, static_cast<int>(args->height / 2 - startRow));
+
+        mandelbrotSerial(
+            args->x0, args->y0,
+            args->x1, args->y1,
+            args->width, args->height,
+            startRow, rowsToProcess,
+            args->maxIterations,
+            args->output);
+    }
 }
 
-//
-// MandelbrotThread --
-//
-// Multi-threaded implementation of mandelbrot set image generation.
-// Threads of execution are created by spawning std::threads.
 void mandelbrotThread(
     int numThreads,
     float x0, float y0, float x1, float y1,
     int width, int height,
     int maxIterations, int output[])
 {
-    static constexpr int MAX_THREADS = 32;
+    static constexpr int MAX_THREADS = 64;
 
     if (numThreads > MAX_THREADS)
     {
@@ -60,13 +65,10 @@ void mandelbrotThread(
     // Creates thread objects that do not yet represent a thread.
     std::thread workers[MAX_THREADS];
     WorkerArgs args[MAX_THREADS];
+    std::atomic<int> nextRow(0); // Shared counter for work distribution
 
     for (int i = 0; i < numThreads; i++)
     {
-
-        // TODO FOR CS149 STUDENTS: You may or may not wish to modify
-        // the per-thread arguments here.  The code below copies the
-        // same arguments for each thread
         args[i].x0 = x0;
         args[i].y0 = y0;
         args[i].x1 = x1;
@@ -76,21 +78,20 @@ void mandelbrotThread(
         args[i].maxIterations = maxIterations;
         args[i].numThreads = numThreads;
         args[i].output = output;
-
         args[i].threadId = i;
+        args[i].nextRow = &nextRow; // Share the atomic counter
     }
 
-    // Spawn the worker threads.  Note that only numThreads-1 std::threads
-    // are created and the main application thread is used as a worker
-    // as well.
+    // Spawn all worker threads (including the main thread)
     for (int i = 1; i < numThreads; i++)
     {
         workers[i] = std::thread(workerThreadStart, &args[i]);
     }
 
+    // Main thread also works
     workerThreadStart(&args[0]);
 
-    // join worker threads
+    // Join worker threads
     for (int i = 1; i < numThreads; i++)
     {
         workers[i].join();
