@@ -8,6 +8,7 @@ this is a personal effort to learn how to make things go FAST
 - [ ] Lab 2: **Building A Task Execution Library from the Ground Up**
 - [ ] Lab 3: **A Simple CUDA Renderer**
 - [ ] Lab 4: **Chat149 - A Flash Attention Transformer DNN**
+- [ ] Lab 5: **Big Graph Processing in OpenMP**
 
 ### MIT 6.5840 : **Distributed Systems**
 - [ ] Lab 1: **MapReduce**
