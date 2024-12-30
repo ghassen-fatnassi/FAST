@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <iostream>
 #include <algorithm>
 #include <getopt.h>
 #include <math.h>
@@ -378,24 +379,26 @@ float arraySumVector(float *values, int N)
   //
   // CS149 STUDENTS TODO: Implement your vectorized version of arraySumSerial here
   //
-  __cs149_vec_float x;
-  __cs149_mask mask;
-
+  __cs149_vec_float x, zero;
+  __cs149_mask mask, all1;
+  zero = _cs149_vset_float(0);
+  all1 = _cs149_init_ones(VECTOR_WIDTH);
   float sum = 0;
   for (int i = 0; i < N; i += VECTOR_WIDTH)
   {
+    _cs149_vload_float(x, values + i, all1);
     int width = VECTOR_WIDTH;
-    while (width > 0)
+    while (width > 1)
     {
-      mask = _cs149_init_ones(width / 2);
-      mask=_cs149_mask_not(mask);
+      width >>= 1;
+      mask = _cs149_init_ones(width);
+      mask = _cs149_mask_not(mask);
       // one step
       _cs149_hadd_float(x, x);
       _cs149_interleave_float(x, x);
-      width >>= 1;
+      _cs149_vmove_float(x, zero, mask);
     }
     sum += x.value[0];
   }
-
   return sum;
 }
