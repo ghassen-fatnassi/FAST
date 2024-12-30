@@ -23,7 +23,7 @@ bool verifyResult(float *values, int *exponents, float *output, float *gold, int
 
 int main(int argc, char *argv[])
 {
-  int N = 8;
+  int N = 16;
   bool printLog = false;
 
   // parse commandline options ////////////////////////////////////////////
@@ -316,38 +316,43 @@ void clampedBinaryExpVector(float *values, int *exponents, float *output, int N)
   __cs149_vec_int y, zero, two_v;
   __cs149_vec_float x, nine, res;
   __cs149_mask all1, if1, if2, if3;
-  all1 = _cs149_init_ones();
   two_v = _cs149_vset_int(2);
   nine = _cs149_vset_float(9.999999f);
   zero = _cs149_vset_int(0);
   for (int i = 0; i < N; i += VECTOR_WIDTH)
   {
+    int limit = VECTOR_WIDTH;
+    if (i + VECTOR_WIDTH > N)
+    {
+      limit = N - i;
+    }
+    all1 = _cs149_init_ones(limit);
     res = _cs149_vset_float(1.f);
     _cs149_vload_float(x, values + i, all1);
     _cs149_vload_int(y, exponents + i, all1);
     _cs149_vgt_int(if1, y, zero, all1);
-
     while (_cs149_cntbits(if1)) // while( all yi's>0 )
     {
       // creating if2 using if1
       __cs149_vec_int times_2, by_2;
-      _cs149_vdiv_int(by_2, y, two_v, if1);
-      _cs149_vmult_int(times_2, by_2, two_v, if1);
+      _cs149_vdiv_int(by_2, y, two_v, all1);
+      _cs149_vmult_int(times_2, by_2, two_v, all1);
       _cs149_vgt_int(if2, y, times_2, if1);
+      if2 = _cs149_mask_and(if2, if1);
       //
 
       // calculating res and clamping it
       _cs149_vmult_float(res, res, x, if2); // resi=resi*xi for all the i where (yi&1)==1
-      _cs149_vgt_float(if3, res, nine, if2);
+      _cs149_vgt_float(if3, res, nine, all1);
+      if3 = _cs149_mask_and(if3, if2);
       _cs149_vmove_float(res, nine, if3);
       //
 
-      _cs149_vdiv_int(y, y, two_v, if1); // yi>>=1 for all i;
-      _cs149_vmult_float(x, x, x, if1);  // x*=x
+      _cs149_vdiv_int(y, y, two_v, all1); // yi>>=1 for all i;
+      _cs149_vmult_float(x, x, x, all1);  // x*=x
 
       _cs149_vgt_int(if1, y, zero, if1); // giving value for curr which will be evaluated in next while if
-      if3 = _cs149_mask_not(if3);
-      if1 = _cs149_mask_and(if1, if3);
+      if1 = _cs149_mask_and(if1, all1);
     }
     _cs149_vstore_float(output + i, res, all1);
   }
@@ -370,14 +375,27 @@ float arraySumSerial(float *values, int N)
 // You can assume VECTOR_WIDTH is a power of 2
 float arraySumVector(float *values, int N)
 {
-
   //
   // CS149 STUDENTS TODO: Implement your vectorized version of arraySumSerial here
   //
+  __cs149_vec_float x;
+  __cs149_mask mask;
 
+  float sum = 0;
   for (int i = 0; i < N; i += VECTOR_WIDTH)
   {
+    int width = VECTOR_WIDTH;
+    while (width > 0)
+    {
+      mask = _cs149_init_ones(width / 2);
+      mask=_cs149_mask_not(mask);
+      // one step
+      _cs149_hadd_float(x, x);
+      _cs149_interleave_float(x, x);
+      width >>= 1;
+    }
+    sum += x.value[0];
   }
 
-  return 0.0;
+  return sum;
 }
