@@ -10,7 +10,7 @@ If you’re passionate about distributed systems, parallel computing, or both, I
 
 ## 📋 Labs Overview  
 
-### **Stanford CS 149: Parallel Computing**  
+### **Stanford CS 149: Parallel Computing**  [Course Page](https://gfxcourses.stanford.edu/cs149/fall24)
 Delving into the nuts and bolts of parallel performance optimization, task execution, and GPU programming.  
 
 - [x] **Lab 1:** Performance Analysis on a Quad-Core CPU  
@@ -22,7 +22,7 @@ Delving into the nuts and bolts of parallel performance optimization, task execu
 
 ---
 
-### **MIT 6.5840: Distributed Systems**  
+### **MIT 6.5840: Distributed Systems**  [Course Page](https://pdos.csail.mit.edu/6.824/)
 Exploring the foundations of reliable, scalable, and fault-tolerant distributed systems.  
 
 - [ ] **Lab 1:** MapReduce  
