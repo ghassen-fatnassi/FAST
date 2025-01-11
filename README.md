@@ -2,10 +2,10 @@
 
 ## 📋 Intro 
 
-Welcome to **FAST**, a repository that captures my journey through the labs of:
+Welcome to **FAST**, a repository that captures my journey through the labs of: <br>
 **Stanford CS 249A (Object-Oriented Programming from a Modeling and Simulation Perspective )** <br>
 **MIT 6.5840 (Distributed Systems)** <br>
-**Stanford CS 149 (Parallel Computing)**. <br>  
+**Stanford CS 149 (Parallel Computing)** <br>  
 
 This is more than just code, it's a personal mission to master the *language of distributed systems and computation*. Each lab is accompanied by a detailed write-up where I explain my approaches, decisions, and perspectives. My goal is to learn and teach as i go , so not everything here is correct, feel free to critique!
 
