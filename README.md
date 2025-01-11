@@ -2,7 +2,7 @@
 
 ## 📋 Intro 
 
-Welcome to **FAST**, a repository that captures my journey through the labs of: <br>
+Welcome to **FAST**, a repository that captures my journey through the labs of: <br> <br>
 **Stanford CS 249A (Object-Oriented Programming from a Modeling and Simulation Perspective )** <br>
 **MIT 6.5840 (Distributed Systems)** <br>
 **Stanford CS 149 (Parallel Computing)** <br>  
