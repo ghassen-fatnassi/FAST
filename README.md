@@ -1,5 +1,7 @@
 # FAST: Advanced OOP, Distributed Systems & Parallel Computing Labs 🚀  
 
+## 📋 Intro 
+
 Welcome to **FAST**, a repository that captures my journey through the labs of **Stanford CS 249A (Object-Oriented Programming from a
 Modeling and Simulation Perspective )**, **MIT 6.5840 (Distributed Systems)** and **Stanford CS 149 (Parallel Computing)**.  
 
@@ -19,7 +21,6 @@ Delving into the nuts and bolts of parallel performance optimization, task execu
 - [ ] **Lab 4:** Chat149 - A Flash Attention Transformer DNN  
 - [ ] **Lab 5:** Big Graph Processing in OpenMP  
 
----
 
 ### **MIT 6.5840: Distributed Systems**  [Course Page](https://pdos.csail.mit.edu/6.824/)
 Exploring the foundations of reliable, scalable, and fault-tolerant distributed systems.  
@@ -30,7 +31,6 @@ Exploring the foundations of reliable, scalable, and fault-tolerant distributed 
 - [ ] **Lab 4:** Fault-Tolerant Key/Value Service  
 - [ ] **Lab 5:** Sharded Key/Value Service  
 
----
 
 ### **Stanford CS 249A (Object-Oriented Programming from a Modeling and Simulation Perspective )** [Course Page](https://web.stanford.edu/class/cs249a/)
 Mastering large-scale object-oriented development, coding conventions, and interface design.
