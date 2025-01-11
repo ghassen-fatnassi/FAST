@@ -17,7 +17,7 @@ This is more than just code, it's a personal mission to master the *language of 
 Delving into the nuts and bolts of parallel performance optimization, task execution, and GPU programming.  
 
 - [x] **Lab 1:** Performance Analysis on a Quad-Core CPU  
-  📖 [Write-Up](https://www.notion.so/Write-Up-of-CS149-Assignement1-1689f1788efd80db96a8d681ca68f429?pvs=4)  
+  📖 [Write-Up](https://itgass.notion.site/Write-Up-of-CS149-LAB1-1689f1788efd80db96a8d681ca68f429)  
 - [ ] **Lab 2:** Building A Task Execution Library from the Ground Up  
 - [ ] **Lab 3:** A Simple CUDA Renderer  
 - [ ] **Lab 4:** Chat149 - A Flash Attention Transformer DNN  
