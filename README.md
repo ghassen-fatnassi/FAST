@@ -16,8 +16,7 @@ This is more than just code, it's a personal mission to master the *language of 
 ### **Stanford CS 149: Parallel Computing**  [Course Page](https://gfxcourses.stanford.edu/cs149/fall24)
 Delving into the nuts and bolts of parallel performance optimization, task execution, and GPU programming.  
 #### Lectures:
-![Progress](https://img.shields.io/badge/Progress-50%25-blue?style=for-the-badge)  
-10/20 lectures completed  
+🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ (7/19 lectures completed)
 #### Labs:
 - [x] **Lab 1:** Performance Analysis on a Quad-Core CPU  
   📖 [Write-Up](https://itgass.notion.site/Write-Up-of-CS149-LAB1-1689f1788efd80db96a8d681ca68f429)  
@@ -28,8 +27,11 @@ Delving into the nuts and bolts of parallel performance optimization, task execu
 
 
 ### **MIT 6.5840: Distributed Systems**  [Course Page](https://pdos.csail.mit.edu/6.824/)
-Exploring the foundations of reliable, scalable, and fault-tolerant distributed systems.  
+Exploring the foundations of reliable, scalable, and fault-tolerant distributed systems.
 
+#### Lectures:
+🟩🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ (3/20 lectures completed)
+#### Labs:
 - [ ] **Lab 1:** MapReduce  
 - [ ] **Lab 2:** Key/Value Server  
 - [ ] **Lab 3:** Raft Consensus Algorithm  
@@ -40,6 +42,9 @@ Exploring the foundations of reliable, scalable, and fault-tolerant distributed 
 ### **Stanford CS 249A (Object-Oriented Programming from a Modeling and Simulation Perspective )** [Course Page](https://web.stanford.edu/class/cs249a/)
 Mastering large-scale object-oriented development, coding conventions, and interface design.
 
+#### Lectures:
+ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ (0/10 lectures completed)
+#### Labs:
 - [ ] **Lab 1:** Malware Simulation
 - [ ] **Lab 2:** Travel Simulation Part 1
 - [ ] **Lab 3:** Travel Simulation Part 2 
