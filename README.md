@@ -1,9 +1,8 @@
-# FAST: Advanced OOP, Distributed Systems & Parallel Computing Labs 🚀  
+# FAST: Distributed Systems & Parallel Computing Labs 🚀  
 
 ## 📋 Intro 
 
 Welcome to **FAST**, a repository that captures my journey through the labs of: <br> <br>
-**Stanford CS 249A (Object-Oriented Programming from a Modeling and Simulation Perspective )** <br>
 **MIT 6.5840 (Distributed Systems)** <br>
 **Stanford CS 149 (Parallel Computing)** <br>  
 
@@ -38,13 +37,3 @@ Exploring the foundations of reliable, scalable, and fault-tolerant distributed 
 - [ ] **Lab 4:** Fault-Tolerant Key/Value Service  
 - [ ] **Lab 5:** Sharded Key/Value Service  
 
-
-### **Stanford CS 249A (Object-Oriented Programming from a Modeling and Simulation Perspective )** [Course Page](https://web.stanford.edu/class/cs249a/)
-Mastering large-scale object-oriented development, coding conventions, and interface design.
-
-#### Lectures:
- ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ (0/10 lectures completed)
-#### Labs:
-- [ ] **Lab 1:** Malware Simulation
-- [ ] **Lab 2:** Travel Simulation Part 1
-- [ ] **Lab 3:** Travel Simulation Part 2 
