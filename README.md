@@ -24,7 +24,7 @@ Delving into the nuts and bolts of parallel performance optimization, task execu
 - [ ] **Lab 3:** A Simple CUDA Renderer  
 - [ ] **Lab 4:** Chat149 - A Flash Attention Transformer DNN  
 - [ ] **Lab 5:** Big Graph Processing in OpenMP  
-#### Written Assigenements:
+#### Written Assignements:
 - [ ] **Assgn 1:**
 - [ ] **Assgn 2:** 
 - [ ] **Assgn 3:**
