@@ -25,8 +25,8 @@ Delving into the nuts and bolts of parallel performance optimization, task execu
 - [ ] **Lab 4:** Chat149 - A Flash Attention Transformer DNN  
 - [ ] **Lab 5:** Big Graph Processing in OpenMP  
 #### Written Assignements:
-- [ ] **Assgn 1:**
-- [ ] **Assgn 2:** 
+- [x] **Assgn 1:**
+- [x] **Assgn 2:** 
 - [ ] **Assgn 3:**
 - [ ] **Assgn 4:** 
 - [ ] **Assgn 5:**
