@@ -6,8 +6,10 @@ package mr
 // remember to capitalize all names.
 //
 
-import "os"
-import "strconv"
+import (
+	"os"
+	"strconv"
+)
 
 //
 // example to show how to declare the arguments
@@ -19,18 +21,17 @@ type ExampleArgs struct {
 }
 
 type ExampleReply struct {
-	Y int
+	Y string
 }
 
 // Add your RPC definitions here.
 
-
 // Cook up a unique-ish UNIX-domain socket name
-// in /var/tmp, for the coordinator.
-// Can't use the current directory since
-// Athena AFS doesn't support UNIX-domain sockets.
+// in /tmp, for the coordinator.
+// possible to use the current directory since
+// this lab is done not on Athena FileSystsem but on Unix's NTFS
 func coordinatorSock() string {
-	s := "/var/tmp/5840-mr-"
+	s := "/tmp/5840-mr-" // ADDED : changed this since i'm doing this lab on Arch
 	s += strconv.Itoa(os.Getuid())
 	return s
 }

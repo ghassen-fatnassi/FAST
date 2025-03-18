@@ -38,7 +38,6 @@ func main() {
 	// pass it to Map,
 	// accumulate the intermediate Map output.
 	//
-
 	intermediate := []mr.KeyValue{}
 	for _, filename := range os.Args[2:] {
 		fmt.Fprintf(os.Stderr, "Usage: mrsequential xxx.so inputfiles...\n")
@@ -58,7 +57,7 @@ func main() {
 	//
 	// a big difference from real MapReduce is that all the
 	// intermediate data is in one place, intermediate[],
-	// rather than being partitioned into NxM buckets.
+	// rather than being partitioned into NxM buckets. (M*R is the correct term after going through the paper)
 	//
 
 	sort.Sort(ByKey(intermediate))
