@@ -19,12 +19,12 @@ type Coordinator struct {
 // an example RPC handler.
 //
 // the RPC argument and reply types are defined in rpc.go.
-func (c *Coordinator) give_task(args *ExampleArgs, reply *ExampleReply) error {
+func (c *Coordinator) GiveTask(args *ExampleArgs, reply *ExampleReply) error {
 	if len(c.tracker[0]) != 0 {
 		curr_file := c.tracker[0][0]
 		c.tracker[1] = append(c.tracker[1], curr_file)
-		reply.Y = curr_file
-
+		reply.file_name = curr_file
+		reply.map_id = len(c.tracker[1])
 	} else {
 		fmt.Printf("Error : All files Mapped but this worker asking for more")
 	}

@@ -2,6 +2,7 @@ package mr
 
 import (
 	"fmt"
+	"encoding/json"
 	"hash/fnv"
 	"io"
 	"log"
@@ -33,7 +34,7 @@ func Worker(mapf func(string, string) []KeyValue,
 	// doing the rpc here
 	args := ExampleArgs{}
 	reply := ExampleReply{}
-	ok := call("coordinator.give_task", &args, &reply)
+	ok := call("coordinator.GiveTask", &args, &reply)
 	if ok {
 		fmt.Printf("reply.Y %v\n", reply.Y)
 	} else {
@@ -50,7 +51,12 @@ func Worker(mapf func(string, string) []KeyValue,
 		log.Fatalf("Error: can't read file %v", filename)
 	}
 	file.Close()
-
+	map_out:= mapf(filename, string(content))
+	json_file:=os.Create("Mr-%v",reply.map_id)
+	encoder:=json.NewEncoder(json_file)
+	for i, kv := map_out {
+		err:=encoder.Encode(&kv)
+	}
 }
 
 // example function to show how to make an RPC call to the coordinator.
