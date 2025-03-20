@@ -21,8 +21,8 @@ type ExampleArgs struct {
 }
 
 type ExampleReply struct {
-	file_name string
-	map_id    int
+	FileName string
+	MapId    int
 }
 
 // Add your RPC definitions here.

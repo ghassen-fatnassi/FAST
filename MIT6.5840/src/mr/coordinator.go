@@ -9,8 +9,60 @@ import (
 	"os"
 )
 
+type Queue struct {
+	elems    []string
+	head     int
+	tail     int
+	size     int
+	capacity int
+}
+
+// Create a new queue with a fixed capacity
+func NewQueue(capacity int) *Queue {
+	return &Queue{
+		elems:    make([]string, capacity),
+		head:     0,
+		tail:     capacity - 1,
+		size:     capacity,
+		capacity: capacity,
+	}
+}
+
+// Enqueue (Add an item to the queue)
+func (q *Queue) Enqueue(item string) bool {
+	if q.IsFull() {
+		return false // Queue is full
+	}
+	q.elems[q.tail] = item
+	q.tail = (q.tail + 1) % q.capacity
+	q.size++
+	return true
+}
+
+// Dequeue (Remove and return the front item)
+func (q *Queue) Dequeue() (string, bool) {
+	if q.IsEmpty() {
+		return "", false // Queue is empty
+	}
+	item := q.elems[q.head]
+	q.head = (q.head + 1) % q.capacity
+	q.size--
+	return item, true
+}
+
+// Check if the queue is empty
+func (q *Queue) IsEmpty() bool {
+	return q.size == 0
+}
+
+// Check if the queue is full
+func (q *Queue) IsFull() bool {
+	return q.size == q.capacity
+}
+
 type Coordinator struct {
-	tracker map[int][]string
+	mapQ    Queue
+	reduceQ Queue
 	nReduce int
 }
 
@@ -20,11 +72,14 @@ type Coordinator struct {
 //
 // the RPC argument and reply types are defined in rpc.go.
 func (c *Coordinator) GiveTask(args *ExampleArgs, reply *ExampleReply) error {
-	if len(c.tracker[0]) != 0 {
-		curr_file := c.tracker[0][0]
-		c.tracker[1] = append(c.tracker[1], curr_file)
-		reply.file_name = curr_file
-		reply.map_id = len(c.tracker[1])
+	if c.mapQ.size != 0 {
+		curr_file, good := c.mapQ.Dequeue()
+		if !good {
+			fmt.Print("mapQueue is empty")
+		}
+		reply.FileName = curr_file
+		reply.MapId = c.mapQ.capacity - c.mapQ.size
+		fmt.Print(c)
 	} else {
 		fmt.Printf("Error : All files Mapped but this worker asking for more")
 	}
@@ -48,7 +103,7 @@ func (c *Coordinator) server() {
 // main/mrcoordinator.go calls Done() periodically to find out
 // if the entire job has finished.
 func (c *Coordinator) Done() bool {
-	ret := true
+	ret := false
 
 	// Your code here.
 
@@ -60,10 +115,11 @@ func (c *Coordinator) Done() bool {
 // nReduce is the number of reduce tasks to use.
 func MakeCoordinator(files []string, nReduce int) *Coordinator {
 	c := Coordinator{}
-	c.tracker[0] = files
+	c.mapQ = *NewQueue(len(files))
+	c.mapQ.elems = files
 	c.nReduce = nReduce
+	fmt.Print(c)
 	// Your code here.
-
 	c.server()
 	return &c
 }

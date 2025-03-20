@@ -1,13 +1,14 @@
 package mr
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"hash/fnv"
 	"io"
 	"log"
 	"net/rpc"
 	"os"
+	"strconv"
 )
 
 // Map functions return a slice of KeyValue.
@@ -34,14 +35,15 @@ func Worker(mapf func(string, string) []KeyValue,
 	// doing the rpc here
 	args := ExampleArgs{}
 	reply := ExampleReply{}
-	ok := call("coordinator.GiveTask", &args, &reply)
+	ok := call("Coordinator.GiveTask", &args, &reply)
 	if ok {
-		fmt.Printf("reply.Y %v\n", reply.Y)
+		fmt.Printf("reply.Y %v\n", reply.FileName)
 	} else {
-		fmt.Printf("RPC failed")
+		fmt.Printf("RPC failed\n")
 	}
 	// got rpc output in reply , gonna do the map now
-	filename := reply.Y
+	filename := reply.FileName
+	fmt.Printf("the file: %v\n", filename)
 	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatalf("Error: can't open file %v", filename)
@@ -51,40 +53,21 @@ func Worker(mapf func(string, string) []KeyValue,
 		log.Fatalf("Error: can't read file %v", filename)
 	}
 	file.Close()
-	map_out:= mapf(filename, string(content))
-	json_file:=os.Create("Mr-%v",reply.map_id)
-	encoder:=json.NewEncoder(json_file)
-	for i, kv := map_out {
-		err:=encoder.Encode(&kv)
+	kvs := mapf(filename, string(content))
+	s := "Mr-"
+	s += strconv.Itoa(reply.MapId)
+	json_file, err := os.Create(s)
+	if err != nil {
+		log.Fatalf("Error: couldn't create file  %v", filename)
 	}
+	encoder := json.NewEncoder(json_file)
+	fmt.Println(kvs[0])
+	fmt.Println(encoder)
 }
 
 // example function to show how to make an RPC call to the coordinator.
 //
 // the RPC argument and reply types are defined in rpc.go.
-func CallExample() {
-
-	// declare an argument structure.
-	args := ExampleArgs{}
-
-	// fill in the argument(s).
-	args.X = 99
-
-	// declare a reply structure.
-	reply := ExampleReply{}
-
-	// send the RPC request, wait for the reply.
-	// the "Coordinator.Example" tells the
-	// receiving server that we'd like to call
-	// the Example() method of struct Coordinator.
-	ok := call("Coordinator.", &args, &reply)
-	if ok {
-		// reply.Y should be 100.
-		fmt.Printf("reply.Y %v\n", reply.Y)
-	} else {
-		fmt.Printf("call failed!\n")
-	}
-}
 
 // send an RPC request to the coordinator, wait for the response.
 // usually returns true.
