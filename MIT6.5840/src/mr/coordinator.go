@@ -61,9 +61,8 @@ func (q *Queue) IsFull() bool {
 }
 
 type Coordinator struct {
-	mapQ    Queue
-	reduceQ Queue
-	nReduce int
+	mapQ Queue
+	R    int
 }
 
 // Your code here -- RPC handlers for the worker to call.
@@ -72,17 +71,16 @@ type Coordinator struct {
 //
 // the RPC argument and reply types are defined in rpc.go.
 func (c *Coordinator) GiveTask(args *ExampleArgs, reply *ExampleReply) error {
-	if c.mapQ.size != 0 {
-		curr_file, good := c.mapQ.Dequeue()
-		if !good {
-			fmt.Print("mapQueue is empty")
-		}
-		reply.FileName = curr_file
-		reply.MapId = c.mapQ.capacity - c.mapQ.size
-		fmt.Print(c)
-	} else {
-		fmt.Printf("Error : All files Mapped but this worker asking for more")
+	curr_file, good := c.mapQ.Dequeue()
+	if !good {
+		fmt.Print("mapQueue is empty")
+		return nil
 	}
+	reply.FileName = curr_file
+	reply.MapId = c.mapQ.capacity - c.mapQ.size
+	reply.R = c.R
+	fmt.Print(reply)
+
 	return nil
 }
 
@@ -117,8 +115,7 @@ func MakeCoordinator(files []string, nReduce int) *Coordinator {
 	c := Coordinator{}
 	c.mapQ = *NewQueue(len(files))
 	c.mapQ.elems = files
-	c.nReduce = nReduce
-	fmt.Print(c)
+	c.R = nReduce
 	// Your code here.
 	c.server()
 	return &c

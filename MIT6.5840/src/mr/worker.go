@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/rpc"
 	"os"
-	"strconv"
 )
 
 // Map functions return a slice of KeyValue.
@@ -25,25 +24,22 @@ func ihash(key string) int {
 	return int(h.Sum32() & 0x7fffffff)
 }
 
-// main/mrworker.go calls this function.
-func Worker(mapf func(string, string) []KeyValue,
-	reducef func(string, []string) string) {
-
-	// Your worker implementation here.
-
-	// uncomment to send the Example RPC to the coordinator.
-	// doing the rpc here
+func Worker(mapf func(string, string) []KeyValue, reducef func(string, []string) string) {
 	args := ExampleArgs{}
 	reply := ExampleReply{}
+
+	// Request a task from the coordinator
 	ok := call("Coordinator.GiveTask", &args, &reply)
-	if ok {
-		fmt.Printf("reply.Y %v\n", reply.FileName)
-	} else {
-		fmt.Printf("RPC failed\n")
+	if !ok {
+		fmt.Println("RPC failed")
+		return
 	}
-	// got rpc output in reply , gonna do the map now
+	if reply.FileName == "" {
+		log.Fatal("mapQ is empty")
+	}
+	fmt.Printf("Received task: %v\n", reply.FileName)
+
 	filename := reply.FileName
-	fmt.Printf("the file: %v\n", filename)
 	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatalf("Error: can't open file %v", filename)
@@ -53,16 +49,36 @@ func Worker(mapf func(string, string) []KeyValue,
 		log.Fatalf("Error: can't read file %v", filename)
 	}
 	file.Close()
-	kvs := mapf(filename, string(content))
-	s := "Mr-"
-	s += strconv.Itoa(reply.MapId)
-	json_file, err := os.Create(s)
-	if err != nil {
-		log.Fatalf("Error: couldn't create file  %v", filename)
+
+	kvs := mapf(filename, string(content)) // Run map function
+
+	// Organize key-value pairs by reducer
+	reducerBuckets := make(map[int][]KeyValue)
+	for i, kv := range kvs {
+		reduceTask := (i * reply.R) / len(kvs)
+		if reduceTask >= reply.R {
+			reduceTask = reply.R - 1
+		}
+		reducerBuckets[reduceTask] = append(reducerBuckets[reduceTask], kv)
 	}
-	encoder := json.NewEncoder(json_file)
-	fmt.Println(kvs[0])
-	fmt.Println(encoder)
+
+	// Write each bucket to a separate JSON file as an array
+	for reduceTask, kvList := range reducerBuckets {
+		jsonFileName := fmt.Sprintf("mr-%d-%d.json", reply.MapId, reduceTask)
+
+		jsonFile, err := os.OpenFile(jsonFileName, os.O_CREATE|os.O_WRONLY, 0666)
+		if err != nil {
+			log.Fatalf("Error: couldn't create/open file %v", jsonFileName)
+		}
+
+		encoder := json.NewEncoder(jsonFile)
+		err = encoder.Encode(kvList) // Write full list as a JSON array
+		if err != nil {
+			log.Fatalf("Error writing to JSON: %v", err)
+		}
+
+		jsonFile.Close()
+	}
 }
 
 // example function to show how to make an RPC call to the coordinator.

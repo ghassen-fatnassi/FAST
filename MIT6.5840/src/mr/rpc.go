@@ -23,6 +23,7 @@ type ExampleArgs struct {
 type ExampleReply struct {
 	FileName string
 	MapId    int
+	R        int
 }
 
 // Add your RPC definitions here.
