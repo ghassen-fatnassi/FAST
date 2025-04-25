@@ -16,11 +16,11 @@ import (
 // and reply for an RPC.
 //
 
-type ExampleArgs struct {
-	X int
+type Args struct {
+	TaskType string
 }
 
-type ExampleReply struct {
+type Reply struct {
 	FileName string
 	MapId    int
 	R        int

@@ -25,8 +25,8 @@ func ihash(key string) int {
 }
 
 func Worker(mapf func(string, string) []KeyValue, reducef func(string, []string) string) {
-	args := ExampleArgs{}
-	reply := ExampleReply{}
+	args := Args{}
+	reply := Reply{}
 
 	// Request a task from the coordinator
 	ok := call("Coordinator.GiveTask", &args, &reply)

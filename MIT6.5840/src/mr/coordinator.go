@@ -70,7 +70,7 @@ type Coordinator struct {
 // an example RPC handler.
 //
 // the RPC argument and reply types are defined in rpc.go.
-func (c *Coordinator) GiveTask(args *ExampleArgs, reply *ExampleReply) error {
+func (c *Coordinator) GiveTask(args *Args, reply *Reply) error {
 	curr_file, good := c.mapQ.Dequeue()
 	if !good {
 		fmt.Print("mapQueue is empty")
