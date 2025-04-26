@@ -1,6 +1,5 @@
 #ifndef _TASKSYS_H
 #define _TASKSYS_H
-
 #include "itasksys.h"
 
 /*
@@ -30,6 +29,8 @@ class TaskSystemParallelSpawn: public ITaskSystem {
         TaskSystemParallelSpawn(int num_threads);
         ~TaskSystemParallelSpawn();
         const char* name();
+        std::atomic<int> pool_count;
+        std::vector<std::thread> threads;
         void run(IRunnable* runnable, int num_total_tasks);
         TaskID runAsyncWithDeps(IRunnable* runnable, int num_total_tasks,
                                 const std::vector<TaskID>& deps);
