@@ -29,8 +29,13 @@ class TaskSystemParallelSpawn: public ITaskSystem {
         TaskSystemParallelSpawn(int num_threads);
         ~TaskSystemParallelSpawn();
         const char* name();
+
         std::atomic<int> pool_count;
         std::vector<std::thread> threads;
+        const int RATIO_THRESHOLD = 10;  
+        /* if (tasks_in_bulk/num_threads >= ratio) 
+        => static execution (heuristic approach , but it works)
+        */
         void run(IRunnable* runnable, int num_total_tasks);
         TaskID runAsyncWithDeps(IRunnable* runnable, int num_total_tasks,
                                 const std::vector<TaskID>& deps);
@@ -43,16 +48,20 @@ class TaskSystemParallelSpawn: public ITaskSystem {
  * thread pool. See definition of ITaskSystem in itasksys.h for
  * documentation of the ITaskSystem interface.
  */
-class TaskSystemParallelThreadPoolSpinning: public ITaskSystem {
+class TaskSystemParallelThreadPoolSpinning : public ITaskSystem {
     public:
         TaskSystemParallelThreadPoolSpinning(int num_threads);
         ~TaskSystemParallelThreadPoolSpinning();
-        const char* name();
+        const char* name();    
         void run(IRunnable* runnable, int num_total_tasks);
         TaskID runAsyncWithDeps(IRunnable* runnable, int num_total_tasks,
                                 const std::vector<TaskID>& deps);
         void sync();
 };
+    
+    
+
+
 
 /*
  * TaskSystemParallelThreadPoolSleeping: This class is the student's

@@ -2,6 +2,7 @@
 #define _ITASKSYS_H
 #include <thread>
 #include <atomic>
+#include <algorithm>
 #include <mutex>
 #include <condition_variable>
 #include <future>
